@@ -4,57 +4,76 @@ import Html.Events exposing (onClick)
 
 -- MODEL
 
-type alias Model = List (List String)
+type alias CellCoord = (Int, Int)
+
+type FieldCell
+  = Empty CellCoord
+  | Mine CellCoord
+
+type alias Field = List (List FieldCell) 
+
+type alias Model = Field
+
+generateEmptyField size = 
+  let
+    generateTemplateField s = List.repeat size (List.repeat s (Empty (0, 0)))
+    attachY row x = List.indexedMap (\i c -> Empty(x, i) ) row
+    attachX template = List.indexedMap (\i c -> attachY c i) template
+  in
+    generateTemplateField size |> attachX
+  
 
 init : Model
-init = [["X","X","X","X"],["X","X","X","X"],["X","X","X","X"],["X","X","X","X"]]
-
+init = generateEmptyField 15
 
 -- UPDATE
 
-expandX field =  List.map (\l -> ("X"::l)) field
+type Msg = Click CellCoord | Other
 
-expand : Model -> Model
-expand field = 
-  case field of 
-    x::_ -> expandX(x::field)
-    [] -> []
+dropMine field (x, y) =
+  let
+    placeMine cell =
+      case cell of
+        Empty (ix, iy) -> if (x == ix && y == iy) then Mine (x, y) else Empty (ix, iy)
+        Mine (ix, iy) -> if (x == ix && y == iy) then Empty (x, y) else Mine (ix, iy)
+  in
+    List.map (\row -> List.map (\cell -> placeMine cell) row) field
 
-reduceX field = List.map
-  (\l -> case l of 
-    _::xs -> xs
-    [] -> []
-  )
-  field
-
-reduce : Model -> Model
-reduce field = 
-  case field of
-    _::xs -> reduceX xs
-    [] -> []
-
-type Msg = Expand | Reduce
+logTest : Model -> CellCoord -> Model
+logTest model testdata =
+  let 
+    _ = Debug.log "testdata" testdata
+  in
+  model
 
 update : Msg -> Model -> Model
 update msg model = 
   case msg of
-    Expand -> expand model
-    Reduce -> reduce model
+    Click (x, y) -> dropMine model (x, y)
+    Other -> model
 
 -- VIEW
 
-renderCell txt = th [] [text txt]
-renderRow row = tr [] (List.map renderCell row)
-renderField field = table [] (List.map renderRow field)
+render field =
+  let
+      renderCells cell =
+        case cell of 
+          Empty (x, y) -> th [onClick (Click (x, y))] [text "-"]
+          Mine (x, y) -> th [] [text "+"]
+      
+      renderRow row = tr [] (List.map renderCells row)
+
+  in
+    table [] (List.map renderRow field)
+  
+
 
 view : Model -> Html Msg
-view model =
+view model = 
   div []
-  [
-    (renderField model),
-    button [ onClick Reduce ] [ text "-" ],
-    button [ onClick Expand ] [ text "+" ]
-  ]
+    [
+      (render model)
+    ]
 
   
 main =
