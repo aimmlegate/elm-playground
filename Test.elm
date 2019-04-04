@@ -1,6 +1,8 @@
 import Browser
 import Html exposing (Html, button, div, text, table, tr, th)
 import Html.Events exposing (onClick)
+import Random exposing (int, step)
+import Time exposing (now, posixToMillis)
 
 -- MODEL
 
@@ -12,7 +14,12 @@ type FieldCell
 
 type alias Field = List (List FieldCell) 
 
-type alias Model = Field
+type alias Model = Field 
+
+type alias Time = Float
+
+
+initialSeed = Random.initialSeed 213213
 
 generateEmptyField size = 
   let
@@ -21,21 +28,42 @@ generateEmptyField size =
     attachX template = List.indexedMap (\i c -> attachY c i) template
   in
     generateTemplateField size |> attachX
-  
+
+randomCoordGenerator max seed = 
+  let
+      random = Random.int 0 max
+      (x, nextSeed) = Random.step random seed
+      (y, returnSeed) = Random.step random nextSeed
+  in
+    (returnSeed, (x, y))
+
+minePlacer n field seed =
+  let
+      fieldSize = List.length field
+      aux i fld sd =
+        let
+            (nextsd, (x, y)) = randomCoordGenerator fieldSize sd
+        in
+            if i == 0
+            then fld
+            else aux (i - 1) (dropMine fld (x, y)) nextsd 
+  in
+      aux n field seed
+
 
 init : Model
-init = generateEmptyField 15
+init = minePlacer 10 (generateEmptyField 15) initialSeed
 
 -- UPDATE
 
-type Msg = Click CellCoord | Other
+type Msg = Click CellCoord | Other 
 
 dropMine field (x, y) =
   let
     placeMine cell =
       case cell of
         Empty (ix, iy) -> if (x == ix && y == iy) then Mine (x, y) else Empty (ix, iy)
-        Mine (ix, iy) -> if (x == ix && y == iy) then Empty (x, y) else Mine (ix, iy)
+        Mine (ix, iy) -> Mine (ix, iy)
   in
     List.map (\row -> List.map (\cell -> placeMine cell) row) field
 
