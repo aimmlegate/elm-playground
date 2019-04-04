@@ -3,6 +3,7 @@ import Html exposing (Html, button, div, text, table, tr, th)
 import Html.Events exposing (onClick)
 import Random exposing (int, step)
 import Time exposing (now, posixToMillis)
+import Array exposing (..)
 
 -- MODEL
 
@@ -11,6 +12,9 @@ type alias CellCoord = (Int, Int)
 type FieldCell
   = Empty CellCoord
   | Mine CellCoord
+  | Info (CellCoord, Int)
+  | InvalidCell
+
 
 type alias Field = List (List FieldCell) 
 
@@ -50,9 +54,67 @@ minePlacer n field seed =
   in
       aux n field seed
 
+iterateCells fn field =
+  List.map (List.map fn) field
+
+getCellCoord cell = 
+  case cell of
+    Empty (x, y) -> (x, y)
+    Mine (x, y) -> (x, y)
+    Info ((x, y), _) -> (x, y)
+    InvalidCell -> (-1, -1) -- need to fix that
+
+
+neighborsCoords (x, y) =
+  [
+    (x + 1, y + 1),
+    (x - 1, y - 1),
+    (x + 1, y - 1),
+    (x - 1, y + 1),
+    (x, y - 1),
+    (x, y + 1), 
+    (x - 1, y), 
+    (x + 1, y)
+  ]
+
+getElement field (x, y) = 
+  let
+      fieldArray = Array.fromList (List.map Array.fromList field)
+      row = Array.get x fieldArray        
+  in
+      case row of
+          Just arr -> Array.get y arr
+          Nothing -> Nothing 
+
+neighborsMines field (x, y) =
+  let
+      cellNeighborsCoord = neighborsCoords (x, y)
+      isNeighborMine ncoord = 
+        case getElement field ncoord of
+          Just (Mine (_, _)) -> True
+          _ -> False
+      neighborMineCount =
+        List.foldl
+          (\c total -> if isNeighborMine(c) then total + 1 else total) 
+          0 
+          cellNeighborsCoord
+  in
+      case neighborMineCount of
+        0 -> Empty (x, y)
+        v -> Info ((x, y), v)
+
+placeInfoMarkers field =
+  iterateCells 
+  (\cell ->
+    case cell of
+      Empty (x, y) -> neighborsMines field (x, y)
+      _ -> cell
+  ) 
+  field
+
 
 init : Model
-init = minePlacer 10 (generateEmptyField 15) initialSeed
+init = (minePlacer 10 (generateEmptyField 15) initialSeed) |> placeInfoMarkers
 
 -- UPDATE
 
@@ -64,6 +126,7 @@ dropMine field (x, y) =
       case cell of
         Empty (ix, iy) -> if (x == ix && y == iy) then Mine (x, y) else Empty (ix, iy)
         Mine (ix, iy) -> Mine (ix, iy)
+        _ -> InvalidCell
   in
     List.map (\row -> List.map (\cell -> placeMine cell) row) field
 
@@ -88,6 +151,8 @@ render field =
         case cell of 
           Empty (x, y) -> th [onClick (Click (x, y))] [text "-"]
           Mine (x, y) -> th [] [text "+"]
+          Info ((x, y), n) -> th [] [text (String.fromInt n)]
+          _ -> th [] [text "error"]
       
       renderRow row = tr [] (List.map renderCells row)
 
