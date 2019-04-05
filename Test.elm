@@ -5,6 +5,7 @@ import Random exposing (int, step)
 import Time exposing (now, posixToMillis)
 import Array exposing (..)
 import Dict exposing (..)
+import Maybe exposing (Maybe)
 
 -- MODEL
 
@@ -146,6 +147,12 @@ init =
 
 type Msg = Click CellCoord | Other 
 
+revealCell viewMask coord =
+  let
+      reveal _ = Just Revealed
+  in
+      Dict.update coord reveal viewMask
+
 dropMine field (x, y) =
   let
     placeMine cell =
@@ -165,9 +172,12 @@ logTest model testdata =
 
 update : Msg -> Model -> Model
 update msg model = 
-  case msg of
-    Click (x, y) -> model
-    Other -> model
+  let
+      { field, viewMask } = model
+  in
+      case msg of
+        Click (x, y) -> { model | viewMask = revealCell viewMask (x, y) }
+        Other -> model
 
 -- VIEW
 
@@ -195,7 +205,6 @@ render field v =
 
   in
     table [] (List.map renderRow field)
-  
 
 
 view : Model -> Html Msg
