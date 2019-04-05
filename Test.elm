@@ -99,6 +99,15 @@ neighborsCoords (x, y) =
     (x + 1, y)
   ]
 
+neighborsCoordsStrict (x, y) =
+  [
+    (x, y - 1),
+    (x, y + 1),
+    (x - 1, y), 
+    (x + 1, y)
+  ]
+
+
 getElement field (x, y) = 
   let
       fieldArray = Array.fromList (List.map Array.fromList field)
@@ -153,6 +162,12 @@ revealCell viewMask coord =
   in
       Dict.update coord reveal viewMask
 
+isCellRevealled viewMask coord =
+  case Dict.get coord viewMask of
+      Just Revealed -> True
+      _ -> False
+          
+
 dropMine field (x, y) =
   let
     placeMine cell =
@@ -170,13 +185,42 @@ logTest model testdata =
   in
   model
 
+recReveal model coord =
+  let
+      { field, viewMask } = model 
+      revNeighCord = neighborsCoordsStrict coord
+  in
+      if isCellRevealled viewMask coord 
+        then model
+        else
+          case getElement field coord of
+            Just (Info ((x, y),  _)) -> { model | viewMask = revealCell viewMask (x, y)} 
+            Just (Empty (x, y)) -> 
+              let
+                  updatedModel = { model | viewMask = revealCell viewMask (x, y)}
+              in
+                  List.foldl (\cellCoord md -> recReveal md cellCoord) updatedModel revNeighCord
+            _ -> model
+              
+
+handleClick model coord =
+  let
+      { field, viewMask } = model  
+  in
+      case getElement field coord of
+        Just (Mine (x, y)) -> { model | viewMask = revealCell viewMask (x, y) }
+        Just (Info ((x, y),  _)) -> { model | viewMask = revealCell viewMask (x, y) }
+        Just (Empty (x, y)) -> recReveal model (x, y)
+        _ -> model
+  
+
 update : Msg -> Model -> Model
 update msg model = 
   let
       { field, viewMask } = model
   in
       case msg of
-        Click (x, y) -> { model | viewMask = revealCell viewMask (x, y) }
+        Click (x, y) -> handleClick model (x, y) 
         Other -> model
 
 -- VIEW
