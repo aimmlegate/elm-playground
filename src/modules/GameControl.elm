@@ -42,7 +42,7 @@ renderGameControlFace model newGameHandler =
         Win ->
             renderControl newGameHandler (Button.button [ Button.success ] [ happy 30 black ])
 
-        Lose -
+        Lose ->
             renderControl newGameHandler (Button.button [ Button.danger ] [ sad 30 black ])
 
 

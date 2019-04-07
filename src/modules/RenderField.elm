@@ -101,7 +101,7 @@ renderField field viewMask clickHandler rclickHandler =
                         )
 
                 Info ( ( x, y ), n ) ->
-                    th [ clickHandler ( x, y ), rclickHandler ( x, y ) ]
+                    th [ clickHandler ( x, y ), rclickHandler ( x, y ) 
                         (if isCellRevealed viewMask ( x, y ) then
                             infoCell n
 
