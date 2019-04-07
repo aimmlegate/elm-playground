@@ -7,7 +7,7 @@ import Model exposing (Model)
 import ViewMask exposing (ViewMaskCell(..), fieldRevealer, getViewCell, placeFlag, removeFlag)
 
 
-handleClick : Model -> CellCoord -
+handleClick : Model -> CellCoord -> Model
 handleClick model coord =
     let
         { field, viewMask } =
