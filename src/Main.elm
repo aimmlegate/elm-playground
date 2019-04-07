@@ -21,6 +21,10 @@ import Time exposing (Posix)
 import ViewMask exposing (ViewMask, initializeViewMask)
 
 
+
+-- MODEL
+
+
 initialSeed =
     Random.initialSeed 9324432
 
