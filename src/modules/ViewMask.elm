@@ -1,4 +1,4 @@
-module ViewMask exposing (ViewMask, ViewMaskCell(..), fieldRevealer, initializeViewMask, isCellRevealed)
+module ViewMask exposing (ViewMask, ViewMaskCell(..), fieldRevealer, initializeViewMask, isCellExploaded, isCellRevealed)
 
 import Dict exposing (..)
 import Field exposing (CellCoord, Field, FieldCell(..), fieldFold, getElement)
@@ -63,6 +63,16 @@ isCellRevealed : ViewMask -> CellCoord -> Bool
 isCellRevealed viewMask coord =
     case Dict.get coord viewMask of
         Just Revealed ->
+            True
+
+        _ ->
+            False
+
+
+isCellExploaded : ViewMask -> CellCoord -> Bool
+isCellExploaded viewMask coord =
+    case Dict.get coord viewMask of
+        Just Exploaded ->
             True
 
         _ ->

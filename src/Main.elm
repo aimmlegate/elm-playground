@@ -1,10 +1,13 @@
-module Index exposing (init, initialSeed, main, update, view)
+module Main exposing (init, initialSeed, main, update, view)
 
 import Array exposing (..)
+import Bootstrap.CDN as CDN
+import Bootstrap.Grid as Grid
 import Browser
 import Control exposing (handleClick)
 import Field exposing (Field, initializeField)
 import Html exposing (Html, button, div, table, text, th, tr)
+import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Maybe exposing (Maybe)
 import Model exposing (..)
@@ -30,7 +33,7 @@ initialSeed =
 
 
 mineField =
-    initializeField 20 30 initialSeed
+    initializeField 20 100 initialSeed
 
 
 init : Model
@@ -68,8 +71,10 @@ view model =
         { field, viewMask } =
             model
     in
-    div []
-        [ renderField field viewMask
+    Grid.container []
+        [ CDN.stylesheet
+        , Html.node "link" [ Html.Attributes.rel "stylesheet", Html.Attributes.href "main.css" ] []
+        , renderField field viewMask
         ]
 
 
