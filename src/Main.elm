@@ -26,12 +26,6 @@ type alias Model =
     { field : Field, viewMask : ViewMask }
 
 
-type GameState
-    = Running
-    | Win
-    | Lose
-
-
 initialSeed =
     Random.initialSeed 213213
 
@@ -41,7 +35,7 @@ initialSeed =
 
 
 mineField =
-    initializeField 20 100 initialSeed
+    initializeField 5 1 initialSeed
 
 
 init : Model

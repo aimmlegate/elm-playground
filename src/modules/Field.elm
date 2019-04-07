@@ -1,4 +1,4 @@
-module Field exposing (CellCoord, Field, FieldCell(..), fieldFold, getCellCoord, getElement, initializeField, iterateCells)
+module Field exposing (CellCoord, Field, FieldCell(..), fieldFold, getAllMines, getCellCoord, getElement, initializeField, iterateCells)
 
 import Array exposing (..)
 import Maybe exposing (Maybe)
@@ -172,6 +172,21 @@ iterateCells fn field =
 fieldFold : (FieldCell -> a -> a) -> a -> Field -> a
 fieldFold fn start field =
     List.foldl (\row total -> List.foldl fn total row) start field
+
+
+getAllMines : Field -> List FieldCell
+getAllMines field =
+    fieldFold
+        (\cell total ->
+            case cell of
+                Mine coord ->
+                    Mine coord :: total
+
+                _ ->
+                    total
+        )
+        []
+        field
 
 
 getCellCoord : FieldCell -> CellCoord

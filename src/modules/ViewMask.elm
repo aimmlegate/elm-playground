@@ -1,4 +1,4 @@
-module ViewMask exposing (ViewMask, ViewMaskCell(..), fieldRevealer, getViewCell, initializeViewMask, isCellExploaded, isCellRevealed, placeFlag, revealAll)
+module ViewMask exposing (ViewMask, ViewMaskCell(..), fieldRevealer, getViewCell, initializeViewMask, isCellExploaded, isCellRevealed, isExpoad, isFlagRight, placeFlag, revealAll)
 
 import Dict exposing (..)
 import Field exposing (CellCoord, Field, FieldCell(..), fieldFold, getElement)
@@ -58,6 +58,34 @@ exploadCell viewMask coord =
 
 
 -- exposing
+
+
+isExpoad : ViewMask -> Bool
+isExpoad viewMask =
+    let
+        viewList =
+            Dict.toList viewMask
+    in
+    List.any
+        (\cell ->
+            case cell of
+                ( _, Exploaded ) ->
+                    True
+
+                _ ->
+                    False
+        )
+        viewList
+
+
+isFlagRight : ViewMask -> Field -> CellCoord -> Bool
+isFlagRight viewMask field coord =
+    case ( getViewCell viewMask coord, getElement field coord ) of
+        ( Just MaybeMine, Just (Mine _) ) ->
+            True
+
+        _ ->
+            False
 
 
 isCellRevealed : ViewMask -> CellCoord -> Bool
