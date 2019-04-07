@@ -8,6 +8,7 @@ import ViewMask exposing (ViewMask)
 type GameState
     = Running
     | Win
+    | Lose
 
 
 type alias Model =
