@@ -3,9 +3,11 @@ module Control exposing (handleClick, handleRightClick)
 import Field exposing (CellCoord, Field, FieldCell(..), getElement)
 import Gamplay exposing (checkGameStatus)
 import Maybe exposing (Maybe)
+import Model exposing (Model)
 import ViewMask exposing (ViewMaskCell(..), fieldRevealer, getViewCell, placeFlag)
 
 
+handleClick : Model -> CellCoord -> Model
 handleClick model coord =
     let
         { field, viewMask } =
@@ -25,6 +27,7 @@ handleClick model coord =
             checkGameStatus model
 
 
+handleRightClick : Model -> CellCoord -> Model
 handleRightClick model coord =
     let
         { field, viewMask } =

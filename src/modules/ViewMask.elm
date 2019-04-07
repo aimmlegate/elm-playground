@@ -1,4 +1,4 @@
-module ViewMask exposing (ViewMask, ViewMaskCell(..), fieldRevealer, getViewCell, initializeViewMask, isCellExploaded, isCellRevealed, isExpoad, isFlagRight, placeFlag, revealAll)
+module ViewMask exposing (ViewMask, ViewMaskCell(..), fieldRevealer, flagCounter, getViewCell, initializeViewMask, isCellExploaded, isCellRevealed, isExpoad, isFlagRight, placeFlag, revealAll)
 
 import Dict exposing (..)
 import Field exposing (CellCoord, Field, FieldCell(..), fieldFold, getElement)
@@ -58,6 +58,21 @@ exploadCell viewMask coord =
 
 
 -- exposing
+
+
+flagCounter : ViewMask -> Int
+flagCounter viewMask =
+    Dict.foldl
+        (\_ t c ->
+            case t of
+                MaybeMine ->
+                    c + 1
+
+                _ ->
+                    c
+        )
+        0
+        viewMask
 
 
 isExpoad : ViewMask -> Bool

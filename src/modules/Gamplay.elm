@@ -1,8 +1,9 @@
-module Gamplay exposing (checkGameStatus)
+module Gamplay exposing (checkGameStatus, newGameTemplate)
 
-import Field exposing (Field, FieldCell(..), getAllMines)
-import Model exposing (..)
-import ViewMask exposing (ViewMask, isExpoad, isFlagRight, revealAll)
+import Field exposing (Field, FieldCell(..), getAllMines, initializeField)
+import Model exposing (GameState(..), Model)
+import Random exposing (Seed, int, step)
+import ViewMask exposing (ViewMask, initializeViewMask, isExpoad, isFlagRight, revealAll)
 
 
 isWin : ViewMask -> Field -> Bool
@@ -43,3 +44,25 @@ checkGameStatus model =
 
         _ ->
             model
+
+
+newGameConstructor : Int -> Int -> Seed -> Model
+newGameConstructor size mines seed =
+    let
+        ( curentseed, nextSeed ) =
+            Random.step (Random.int 0 9999) seed
+
+        mineField =
+            initializeField size mines (Random.initialSeed curentseed)
+    in
+    { field = mineField
+    , gameState = Running
+    , viewMask = initializeViewMask mineField
+    , mineCounter = mines
+    , fieldSize = size
+    , seed = nextSeed
+    }
+
+
+newGameTemplate seed =
+    newGameConstructor 10 5 seed

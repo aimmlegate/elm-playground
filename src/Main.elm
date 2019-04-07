@@ -1,4 +1,4 @@
-module Main exposing (init, initialSeed, main, update, view)
+module Main exposing (init, main, update, view)
 
 import Array exposing (..)
 import Bootstrap.CDN as CDN
@@ -7,6 +7,7 @@ import Browser
 import Control exposing (handleClick, handleRightClick)
 import Field exposing (Field, initializeField)
 import GameControl exposing (renderGameControl)
+import Gamplay exposing (newGameTemplate)
 import Html exposing (Html, button, div, table, text, th, tr)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
@@ -15,6 +16,8 @@ import Maybe exposing (Maybe)
 import Model exposing (GameState(..), Model, Msg(..))
 import Random exposing (..)
 import RenderField exposing (renderField)
+import Task
+import Time exposing (..)
 import ViewMask exposing (ViewMask, initializeViewMask)
 
 
@@ -26,20 +29,9 @@ initialSeed =
     Random.initialSeed 213213
 
 
-
--- need to fix that
-
-
-mineField =
-    initializeField 5 1 initialSeed
-
-
 init : Model
 init =
-    { field = mineField
-    , viewMask = initializeViewMask mineField
-    , gameState = Running
-    }
+    newGameTemplate initialSeed
 
 
 
@@ -49,7 +41,7 @@ init =
 update : Msg -> Model -> Model
 update msg model =
     let
-        { field, viewMask } =
+        { field, viewMask, seed } =
             model
     in
     case msg of
@@ -59,8 +51,8 @@ update msg model =
         RightClick ( x, y ) ->
             handleRightClick model ( x, y )
 
-        _ ->
-            model
+        NewGame ->
+            newGameTemplate seed
 
 
 clickHandler coord =
@@ -69,6 +61,10 @@ clickHandler coord =
 
 rclickHandler coord =
     Mouse.onContextMenu (\event -> RightClick coord)
+
+
+newGameHandler =
+    onClick NewGame
 
 
 
@@ -80,14 +76,11 @@ view model =
     let
         { field, viewMask, gameState } =
             model
-
-        _ =
-            Debug.log "aa" gameState
     in
     Grid.container []
         [ CDN.stylesheet
         , Html.node "link" [ Html.Attributes.rel "stylesheet", Html.Attributes.href "main.css" ] []
-        , renderGameControl
+        , renderGameControl model newGameHandler
         , renderField field viewMask clickHandler rclickHandler
         ]
 
