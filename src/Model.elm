@@ -19,3 +19,4 @@ type Msg
     = Click CellCoord
     | RightClick CellCoord
     | NewGame
+    | NewRandomNumber Int

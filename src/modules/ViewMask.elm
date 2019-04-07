@@ -1,4 +1,4 @@
-module ViewMask exposing (ViewMask, ViewMaskCell(..), fieldRevealer, flagCounter, getViewCell, initializeViewMask, isCellExploaded, isCellRevealed, isExpoad, isFlagRight, placeFlag, revealAll)
+module ViewMask exposing (ViewMask, ViewMaskCell(..), fieldRevealer, flagCounter, getViewCell, initializeViewMask, isCellExploaded, isCellRevealed, isExpoad, isFlagRight, placeFlag, removeFlag, revealAll)
 
 import Dict exposing (..)
 import Field exposing (CellCoord, Field, FieldCell(..), fieldFold, getElement)
@@ -38,22 +38,23 @@ neighborsCoordsStrict ( x, y ) =
     ]
 
 
+updateMask : ViewMaskCell -> ViewMask -> CellCoord -> ViewMask
+updateMask newCellType viewMask coord =
+    let
+        new _ =
+            Just newCellType
+    in
+    Dict.update coord new viewMask
+
+
 revealCell : ViewMask -> CellCoord -> ViewMask
 revealCell viewMask coord =
-    let
-        reveal _ =
-            Just Revealed
-    in
-    Dict.update coord reveal viewMask
+    updateMask Revealed viewMask coord
 
 
 exploadCell : ViewMask -> CellCoord -> ViewMask
 exploadCell viewMask coord =
-    let
-        expload _ =
-            Just Exploaded
-    in
-    Dict.update coord expload viewMask
+    updateMask Exploaded viewMask coord
 
 
 
@@ -164,11 +165,12 @@ getViewCell viewMask coord =
 
 placeFlag : ViewMask -> CellCoord -> ViewMask
 placeFlag viewMask coord =
-    let
-        flag _ =
-            Just MaybeMine
-    in
-    Dict.update coord flag viewMask
+    updateMask MaybeMine viewMask coord
+
+
+removeFlag : ViewMask -> CellCoord -> ViewMask
+removeFlag viewMask coord =
+    updateMask Hiden viewMask coord
 
 
 fieldRevealer : ViewMask -> Field -> CellCoord -> ViewMask

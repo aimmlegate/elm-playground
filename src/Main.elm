@@ -17,7 +17,7 @@ import Model exposing (GameState(..), Model, Msg(..))
 import Random exposing (..)
 import RenderField exposing (renderField)
 import Task
-import Time exposing (..)
+import Time exposing (Posix)
 import ViewMask exposing (ViewMask, initializeViewMask)
 
 
@@ -26,7 +26,7 @@ import ViewMask exposing (ViewMask, initializeViewMask)
 
 
 initialSeed =
-    Random.initialSeed 213213
+    Random.initialSeed 9324432
 
 
 init : Model
@@ -54,6 +54,9 @@ update msg model =
         NewGame ->
             newGameTemplate seed
 
+        _ ->
+            model
+
 
 clickHandler coord =
     onClick (Click coord)
@@ -77,11 +80,17 @@ view model =
         { field, viewMask, gameState } =
             model
     in
-    Grid.container []
+    div []
         [ CDN.stylesheet
         , Html.node "link" [ Html.Attributes.rel "stylesheet", Html.Attributes.href "main.css" ] []
-        , renderGameControl model newGameHandler
-        , renderField field viewMask clickHandler rclickHandler
+        , Grid.container []
+            [ Grid.row []
+                [ Grid.col [] [ renderGameControl model newGameHandler ]
+                ]
+            , Grid.row []
+                [ Grid.col [] [ renderField field viewMask clickHandler rclickHandler ]
+                ]
+            ]
         ]
 
 

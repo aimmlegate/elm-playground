@@ -115,4 +115,4 @@ renderField field viewMask clickHandler rclickHandler =
         renderRow row =
             tr [] (List.map renderCells row)
     in
-    table [ class "border border-dark" ] (List.map renderRow field)
+    div [ class "d-flex justify-content-center align-items-center" ] [ table [ class "border border-dark" ] (List.map renderRow field) ]

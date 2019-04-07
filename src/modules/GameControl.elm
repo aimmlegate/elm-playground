@@ -51,7 +51,7 @@ renderMineCounter model =
         { viewMask, mineCounter } =
             model
     in
-    div [] [ text (String.fromInt (mineCounter - flagCounter viewMask)) ]
+    div [ class "mr-3" ] [ text ("Mines left " ++ String.fromInt (mineCounter - flagCounter viewMask)) ]
 
 
 
@@ -59,7 +59,7 @@ renderMineCounter model =
 
 
 renderGameControl model newGameHandler =
-    div []
-        [ renderGameControlFace model newGameHandler
-        , renderMineCounter model
+    div [ class "d-flex justify-content-center align-items-center mb-3 mt-3" ]
+        [ renderMineCounter model
+        , renderGameControlFace model newGameHandler
         ]

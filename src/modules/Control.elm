@@ -4,7 +4,7 @@ import Field exposing (CellCoord, Field, FieldCell(..), getElement)
 import Gamplay exposing (checkGameStatus)
 import Maybe exposing (Maybe)
 import Model exposing (Model)
-import ViewMask exposing (ViewMaskCell(..), fieldRevealer, getViewCell, placeFlag)
+import ViewMask exposing (ViewMaskCell(..), fieldRevealer, getViewCell, placeFlag, removeFlag)
 
 
 handleClick : Model -> CellCoord -> Model
@@ -36,6 +36,9 @@ handleRightClick model coord =
     case getViewCell viewMask coord of
         Just Hiden ->
             checkGameStatus { model | viewMask = placeFlag viewMask coord }
+
+        Just MaybeMine ->
+            { model | viewMask = removeFlag viewMask coord }
 
         _ ->
             checkGameStatus model

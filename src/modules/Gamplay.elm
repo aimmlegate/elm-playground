@@ -65,4 +65,4 @@ newGameConstructor size mines seed =
 
 
 newGameTemplate seed =
-    newGameConstructor 10 5 seed
+    newGameConstructor 15 40 seed
