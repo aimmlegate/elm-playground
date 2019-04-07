@@ -1,4 +1,4 @@
-module ViewMask exposing (ViewMask, ViewMaskCell(..), fieldRevealer, initializeViewMask, isCellExploaded, isCellRevealed)
+module ViewMask exposing (ViewMask, ViewMaskCell(..), fieldRevealer, getViewCell, initializeViewMask, isCellExploaded, isCellRevealed, placeFlag, revealAll)
 
 import Dict exposing (..)
 import Field exposing (CellCoord, Field, FieldCell(..), fieldFold, getElement)
@@ -13,6 +13,7 @@ type ViewMaskCell
     = Hiden
     | Revealed
     | Exploaded
+    | MaybeMine
     | InvalidViewCell
 
 
@@ -97,6 +98,25 @@ initializeViewMask field =
                     Dict.insert ( x, y ) InvalidViewCell dict
     in
     fieldFold maskCellCreator Dict.empty field
+
+
+revealAll : ViewMask -> ViewMask
+revealAll viewMask =
+    Dict.map (\_ -> always Revealed) viewMask
+
+
+getViewCell : ViewMask -> CellCoord -> Maybe ViewMaskCell
+getViewCell viewMask coord =
+    Dict.get coord viewMask
+
+
+placeFlag : ViewMask -> CellCoord -> ViewMask
+placeFlag viewMask coord =
+    let
+        flag _ =
+            Just MaybeMine
+    in
+    Dict.update coord flag viewMask
 
 
 fieldRevealer : ViewMask -> Field -> CellCoord -> ViewMask

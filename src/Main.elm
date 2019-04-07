@@ -4,15 +4,17 @@ import Array exposing (..)
 import Bootstrap.CDN as CDN
 import Bootstrap.Grid as Grid
 import Browser
-import Control exposing (handleClick)
+import Control exposing (handleClick, handleRightClick)
 import Field exposing (Field, initializeField)
+import GameControl exposing (renderGameControl)
 import Html exposing (Html, button, div, table, text, th, tr)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Html.Events.Extra.Mouse as Mouse
 import Maybe exposing (Maybe)
 import Model exposing (..)
 import Random exposing (..)
-import Render exposing (renderField)
+import RenderField exposing (renderField)
 import ViewMask exposing (ViewMask, initializeViewMask)
 
 
@@ -22,6 +24,12 @@ import ViewMask exposing (ViewMask, initializeViewMask)
 
 type alias Model =
     { field : Field, viewMask : ViewMask }
+
+
+type GameState
+    = Running
+    | Win
+    | Lose
 
 
 initialSeed =
@@ -57,8 +65,19 @@ update msg model =
         Click ( x, y ) ->
             handleClick model ( x, y )
 
-        Other ->
+        RightClick ( x, y ) ->
+            handleRightClick model ( x, y )
+
+        _ ->
             model
+
+
+clickHandler coord =
+    onClick (Click coord)
+
+
+rclickHandler coord =
+    Mouse.onContextMenu (\event -> RightClick coord)
 
 
 
@@ -74,7 +93,8 @@ view model =
     Grid.container []
         [ CDN.stylesheet
         , Html.node "link" [ Html.Attributes.rel "stylesheet", Html.Attributes.href "main.css" ] []
-        , renderField field viewMask
+        , renderGameControl
+        , renderField field viewMask clickHandler rclickHandler
         ]
 
 

@@ -6,4 +6,5 @@ import ViewMask exposing (ViewMask)
 
 type Msg
     = Click CellCoord
+    | RightClick CellCoord
     | Other

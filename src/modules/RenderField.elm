@@ -1,13 +1,13 @@
-module Render exposing (renderField)
+module RenderField exposing (renderField)
 
 import Bootstrap.Button as Button
 import Field exposing (FieldCell(..))
 import Html exposing (Html, button, div, p, table, text, th, tr)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
-import Ionicon exposing (nuclear)
+import Ionicon exposing (flag, nuclear)
 import Model exposing (..)
-import ViewMask exposing (ViewMaskCell(..), isCellExploaded, isCellRevealed)
+import ViewMask exposing (ViewMaskCell(..), getViewCell, isCellExploaded, isCellRevealed)
 
 
 
@@ -25,6 +25,10 @@ type alias RGBA =
 black : RGBA
 black =
     RGBA 0 0 0 1
+
+
+red =
+    RGBA 255 0 0 1
 
 
 btnContainer btn =
@@ -46,11 +50,20 @@ renderInfo n =
             p [ class "text-danger font-weight-bold" ] [ text (String.fromInt n) ]
 
 
+renderHiddenCell viewMask ( x, y ) =
+    case getViewCell viewMask ( x, y ) of
+        Just MaybeMine ->
+            btnContainer (Button.button [ Button.outlineSecondary ] [ flag 20 red ])
+
+        _ ->
+            btnContainer (Button.button [ Button.outlineSecondary ] [])
+
+
 
 -- exposing
 
 
-renderField field viewMask =
+renderField field viewMask clickHandler rclickHandler =
     let
         emptyCell =
             btnContainer (Button.button [ Button.light, Button.disabled True ] [])
@@ -61,25 +74,22 @@ renderField field viewMask =
         exploadedCell =
             btnContainer (Button.button [ Button.danger ] [ nuclear 20 black ])
 
-        hiddenCell =
-            btnContainer (Button.button [ Button.outlineSecondary ] [])
-
         infoCell n =
             btnContainer (Button.button [ Button.light, Button.disabled True ] [ renderInfo n ])
 
         renderCells cell =
             case cell of
                 Empty ( x, y ) ->
-                    th [ onClick (Click ( x, y )) ]
+                    th [ clickHandler ( x, y ), rclickHandler ( x, y ) ]
                         (if isCellRevealed viewMask ( x, y ) then
                             emptyCell
 
                          else
-                            hiddenCell
+                            renderHiddenCell viewMask ( x, y )
                         )
 
                 Mine ( x, y ) ->
-                    th [ onClick (Click ( x, y )) ]
+                    th [ clickHandler ( x, y ), rclickHandler ( x, y ) ]
                         (if isCellRevealed viewMask ( x, y ) then
                             mineCell
 
@@ -87,16 +97,16 @@ renderField field viewMask =
                             exploadedCell
 
                          else
-                            hiddenCell
+                            renderHiddenCell viewMask ( x, y )
                         )
 
                 Info ( ( x, y ), n ) ->
-                    th [ onClick (Click ( x, y )) ]
+                    th [ clickHandler ( x, y ), rclickHandler ( x, y ) ]
                         (if isCellRevealed viewMask ( x, y ) then
                             infoCell n
 
                          else
-                            hiddenCell
+                            renderHiddenCell viewMask ( x, y )
                         )
 
                 _ ->
