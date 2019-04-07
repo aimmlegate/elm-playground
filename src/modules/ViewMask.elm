@@ -130,7 +130,16 @@ initializeViewMask field =
 
 revealAll : ViewMask -> ViewMask
 revealAll viewMask =
-    Dict.map (\_ -> always Revealed) viewMask
+    Dict.map
+        (\c t ->
+            case t of
+                Exploaded ->
+                    Exploaded
+
+                _ ->
+                    Revealed
+        )
+        viewMask
 
 
 getViewCell : ViewMask -> CellCoord -> Maybe ViewMaskCell

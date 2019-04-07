@@ -1,6 +1,7 @@
 module Control exposing (handleClick, handleRightClick)
 
 import Field exposing (CellCoord, Field, FieldCell(..), getElement)
+import Gamplay exposing (checkGameStatus)
 import Maybe exposing (Maybe)
 import ViewMask exposing (ViewMaskCell(..), fieldRevealer, getViewCell, placeFlag)
 
@@ -12,16 +13,16 @@ handleClick model coord =
     in
     case getElement field coord of
         Just (Mine ( x, y )) ->
-            { model | viewMask = fieldRevealer viewMask field ( x, y ) }
+            checkGameStatus { model | viewMask = fieldRevealer viewMask field ( x, y ) }
 
         Just (Info ( ( x, y ), _ )) ->
-            { model | viewMask = fieldRevealer viewMask field ( x, y ) }
+            checkGameStatus { model | viewMask = fieldRevealer viewMask field ( x, y ) }
 
         Just (Empty ( x, y )) ->
-            { model | viewMask = fieldRevealer viewMask field ( x, y ) }
+            checkGameStatus { model | viewMask = fieldRevealer viewMask field ( x, y ) }
 
         _ ->
-            model
+            checkGameStatus model
 
 
 handleRightClick model coord =
@@ -31,7 +32,7 @@ handleRightClick model coord =
     in
     case getViewCell viewMask coord of
         Just Hiden ->
-            { model | viewMask = placeFlag viewMask coord }
+            checkGameStatus { model | viewMask = placeFlag viewMask coord }
 
         _ ->
-            model
+            checkGameStatus model

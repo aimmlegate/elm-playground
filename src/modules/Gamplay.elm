@@ -1,17 +1,8 @@
-module Main exposing (GameState, isLose, isWin)
+module Gamplay exposing (checkGameStatus)
 
 import Field exposing (Field, FieldCell(..), getAllMines)
-import ViewMask exposing (ViewMask, isExpoad, isFlagRight)
-
-
-type GameState
-    = Running
-    | Win
-    | Lose
-
-
-
--- exposing
+import Model exposing (..)
+import ViewMask exposing (ViewMask, isExpoad, isFlagRight, revealAll)
 
 
 isWin : ViewMask -> Field -> Bool
@@ -31,3 +22,24 @@ isWin viewMask field =
 isLose : ViewMask -> Bool
 isLose viewMask =
     isExpoad viewMask
+
+
+
+-- exposing
+
+
+checkGameStatus : Model -> Model
+checkGameStatus model =
+    let
+        { field, viewMask, gameState } =
+            model
+    in
+    case ( isLose viewMask, isWin viewMask field ) of
+        ( True, _ ) ->
+            { model | viewMask = revealAll viewMask, gameState = Lose }
+
+        ( False, True ) ->
+            { model | viewMask = revealAll viewMask, gameState = Win }
+
+        _ ->
+            model

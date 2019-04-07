@@ -12,7 +12,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Events.Extra.Mouse as Mouse
 import Maybe exposing (Maybe)
-import Model exposing (..)
+import Model exposing (GameState(..), Model, Msg(..))
 import Random exposing (..)
 import RenderField exposing (renderField)
 import ViewMask exposing (ViewMask, initializeViewMask)
@@ -20,10 +20,6 @@ import ViewMask exposing (ViewMask, initializeViewMask)
 
 
 -- MODEL
-
-
-type alias Model =
-    { field : Field, viewMask : ViewMask }
 
 
 initialSeed =
@@ -42,6 +38,7 @@ init : Model
 init =
     { field = mineField
     , viewMask = initializeViewMask mineField
+    , gameState = Running
     }
 
 
@@ -81,8 +78,11 @@ rclickHandler coord =
 view : Model -> Html Msg
 view model =
     let
-        { field, viewMask } =
+        { field, viewMask, gameState } =
             model
+
+        _ =
+            Debug.log "aa" gameState
     in
     Grid.container []
         [ CDN.stylesheet
