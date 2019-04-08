@@ -1,7 +1,17 @@
 module GameControl exposing (renderGameControl)
 
 import Bootstrap.Button as Button
-import Html exposing (Html, button, div, p, table, text, th, tr)
+import Html
+    exposing
+        ( Html
+        , button
+        , div
+        , p
+        , table
+        , text
+        , th
+        , tr
+        )
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Ionicon.Android exposing (happy, sad)
@@ -59,7 +69,14 @@ renderMineCounter model =
 
 
 renderGameControl model newGameHandler =
+    let
+        { difficulty } =
+            model
+
+        newGameWithDifficulty =
+            newGameHandler difficulty
+    in
     div [ class "d-flex justify-content-center align-items-center mb-3 mt-3" ]
         [ renderMineCounter model
-        , renderGameControlFace model newGameHandler
+        , renderGameControlFace model newGameWithDifficulty
         ]

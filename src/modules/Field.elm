@@ -1,4 +1,14 @@
-module Field exposing (CellCoord, Field, FieldCell(..), fieldFold, getAllMines, getCellCoord, getElement, initializeField, iterateCells)
+module Field exposing
+    ( CellCoord
+    , Field
+    , FieldCell(..)
+    , fieldFold
+    , getAllMines
+    , getCellCoord
+    , getElement
+    , initializeField
+    , iterateCells
+    )
 
 import Array exposing (..)
 import Maybe exposing (Maybe)

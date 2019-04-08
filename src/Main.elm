@@ -13,7 +13,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Events.Extra.Mouse as Mouse
 import Maybe exposing (Maybe)
-import Model exposing (GameState(..), Model, Msg(..))
+import Model exposing (GameDifficulty(..), GameState(..), Model, Msg(..))
 import Random exposing (..)
 import RenderField exposing (renderField)
 import Task
@@ -31,7 +31,7 @@ initialSeed =
 
 init : Model
 init =
-    newGameTemplate initialSeed
+    newGameTemplate Ease initialSeed
 
 
 
@@ -51,8 +51,8 @@ update msg model =
         RightClick ( x, y ) ->
             handleRightClick model ( x, y )
 
-        NewGame ->
-            newGameTemplate seed
+        NewGame difficulty ->
+            newGameTemplate difficulty seed
 
         _ ->
             model
@@ -66,8 +66,8 @@ rclickHandler coord =
     Mouse.onContextMenu (\event -> RightClick coord)
 
 
-newGameHandler =
-    onClick NewGame
+newGameHandler difficulty =
+    onClick (NewGame difficulty)
 
 
 

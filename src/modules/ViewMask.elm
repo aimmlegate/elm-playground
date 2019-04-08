@@ -1,4 +1,18 @@
-module ViewMask exposing (ViewMask, ViewMaskCell(..), fieldRevealer, flagCounter, getViewCell, initializeViewMask, isCellExploaded, isCellRevealed, isExpoad, isFlagRight, placeFlag, removeFlag, revealAll)
+module ViewMask exposing
+    ( ViewMask
+    , ViewMaskCell(..)
+    , fieldRevealer
+    , flagCounter
+    , getViewCell
+    , initializeViewMask
+    , isCellExploaded
+    , isCellRevealed
+    , isExpoad
+    , isFlagRight
+    , placeFlag
+    , removeFlag
+    , revealAll
+    )
 
 import Dict exposing (..)
 import Field exposing (CellCoord, Field, FieldCell(..), fieldFold, getElement)

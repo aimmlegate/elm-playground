@@ -1,9 +1,16 @@
 module Gamplay exposing (checkGameStatus, newGameTemplate)
 
 import Field exposing (Field, FieldCell(..), getAllMines, initializeField)
-import Model exposing (GameState(..), Model)
+import Model exposing (GameDifficulty(..), GameState(..), Model)
 import Random exposing (Seed, int, step)
-import ViewMask exposing (ViewMask, initializeViewMask, isExpoad, isFlagRight, revealAll)
+import ViewMask
+    exposing
+        ( ViewMask
+        , initializeViewMask
+        , isExpoad
+        , isFlagRight
+        , revealAll
+        )
 
 
 isWin : ViewMask -> Field -> Bool
@@ -23,6 +30,26 @@ isWin viewMask field =
 isLose : ViewMask -> Bool
 isLose viewMask =
     isExpoad viewMask
+
+
+newGameConstructor : Int -> Int -> Seed -> Model
+newGameConstructor size mines seed =
+    let
+        ( curentseed, nextSeed ) =
+            Random.step (Random.int 0 9999) seed
+
+        mineField =
+            initializeField size mines (Random.initialSeed curentseed)
+    in
+    { field = mineField
+    , gameState = Running
+    , viewMask = initializeViewMask mineField
+    , mineCounter = mines
+    , fieldSize = size
+    , seed = nextSeed
+    , diffSettingOpen = False
+    , difficulty = Normal
+    }
 
 
 
@@ -46,23 +73,13 @@ checkGameStatus model =
             model
 
 
-newGameConstructor : Int -> Int -> Seed -> Model
-newGameConstructor size mines seed =
-    let
-        ( curentseed, nextSeed ) =
-            Random.step (Random.int 0 9999) seed
+newGameTemplate difficulty seed =
+    case difficulty of
+        Ease ->
+            newGameConstructor 10 10 seed
 
-        mineField =
-            initializeField size mines (Random.initialSeed curentseed)
-    in
-    { field = mineField
-    , gameState = Running
-    , viewMask = initializeViewMask mineField
-    , mineCounter = mines
-    , fieldSize = size
-    , seed = nextSeed
-    }
+        Normal ->
+            newGameConstructor 16 40 seed
 
-
-newGameTemplate seed =
-    newGameConstructor 15 40 seed
+        Hard ->
+            newGameConstructor 22 100 seed
