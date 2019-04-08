@@ -80,12 +80,15 @@ renderGameControl model newGameHandler =
     div [ class "d-flex justify-content-center align-items-center mb-3 mt-3" ]
         [ renderMineCounter model
         , renderGameControlFace model newGameWithDifficulty
-        , Select.select
-            [ Select.id "difficulty"
-            , Select.onChange ChangeDifficulty
-            ]
-            [ Select.item [ value "Easy" ] [ text "Easy" ]
-            , Select.item [ value "Normal" ] [ text "Normal" ]
-            , Select.item [ value "Hard" ] [ text "Hard" ]
+        , div [ class "p-3" ]
+            [ Select.select
+                [ Select.id "difficulty"
+                , Select.small
+                , Select.onChange ChangeDifficulty
+                ]
+                [ Select.item [ value "Easy" ] [ text "Easy" ]
+                , Select.item [ value "Normal" ] [ text "Normal" ]
+                , Select.item [ value "Hard" ] [ text "Hard" ]
+                ]
             ]
         ]
