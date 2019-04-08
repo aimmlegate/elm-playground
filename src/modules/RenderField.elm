@@ -2,7 +2,7 @@ module RenderField exposing (renderField)
 
 import Bootstrap.Button as Button
 import Field exposing (FieldCell(..))
-import Html exposing (Html, button, div, p, table, text, th, tr)
+import Html exposing (Html, button, div, span, table, text, th, tr)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Ionicon exposing (flag, nuclear)
@@ -44,16 +44,16 @@ btnContainer btn =
 renderInfo n =
     case n of
         1 ->
-            p [ class "text-primary font-weight-bold" ] [ text (String.fromInt n) ]
+            span [ class "text-primary font-weight-bold" ] [ text (String.fromInt n) ]
 
         2 ->
-            p [ class "text-success font-weight-bold" ] [ text (String.fromInt n) ]
+            span [ class "text-success font-weight-bold" ] [ text (String.fromInt n) ]
 
         3 ->
-            p [ class "text-warning font-weight-bold" ] [ text (String.fromInt n) ]
+            span [ class "text-warning font-weight-bold" ] [ text (String.fromInt n) ]
 
         _ ->
-            p [ class "text-danger font-weight-bold" ] [ text (String.fromInt n) ]
+            span [ class "text-danger font-weight-bold" ] [ text (String.fromInt n) ]
 
 
 renderHiddenCell viewMask ( x, y ) =

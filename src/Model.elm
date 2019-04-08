@@ -34,3 +34,4 @@ type Msg
     | RightClick CellCoord
     | NewGame GameDifficulty
     | NewRandomNumber Int
+    | ChangeDifficulty String

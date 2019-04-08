@@ -1,4 +1,9 @@
-module Gamplay exposing (checkGameStatus, initialGameConstructor, newGameTemplate)
+module Gamplay exposing
+    ( changeDifficulty
+    , checkGameStatus
+    , initialGameConstructor
+    , newGameTemplate
+    )
 
 import Field exposing (Field, FieldCell(..), getAllMines, initializeField)
 import Model exposing (GameDifficulty(..), GameState(..), Model)
@@ -57,6 +62,21 @@ newGameConstructor difficulty size mines seed model =
 -- exposing
 
 
+changeDifficulty model string =
+    case string of
+        "Easy" ->
+            { model | difficulty = Ease }
+
+        "Normal" ->
+            { model | difficulty = Normal }
+
+        "Hard" ->
+            { model | difficulty = Hard }
+
+        _ ->
+            model
+
+
 initialGameConstructor : Seed -> Model
 initialGameConstructor initialSeed =
     let
@@ -64,16 +84,16 @@ initialGameConstructor initialSeed =
             Random.step (Random.int 0 9999) initialSeed
 
         mineField =
-            initializeField 16 40 (Random.initialSeed curentseed)
+            initializeField 10 10 (Random.initialSeed curentseed)
     in
     { field = mineField
     , gameState = Running
     , viewMask = initializeViewMask mineField
-    , mineCounter = 40
-    , fieldSize = 16
+    , mineCounter = 10
+    , fieldSize = 10
     , seed = nextSeed
     , diffSettingOpen = False
-    , difficulty = Normal
+    , difficulty = Ease
     }
 
 

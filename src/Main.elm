@@ -7,7 +7,7 @@ import Browser
 import Control exposing (handleClick, handleRightClick)
 import Field exposing (Field, initializeField)
 import GameControl exposing (renderGameControl)
-import Gamplay exposing (initialGameConstructor, newGameTemplate)
+import Gamplay exposing (changeDifficulty, initialGameConstructor, newGameTemplate)
 import Html exposing (Html, button, div, table, text, th, tr)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
@@ -51,8 +51,18 @@ update msg model =
         RightClick ( x, y ) ->
             handleRightClick model ( x, y )
 
-        NewGame difficulty ->
-            newGameTemplate difficulty seed model
+        NewGame diff ->
+            newGameTemplate diff seed model
+
+        ChangeDifficulty str ->
+            let
+                newGame =
+                    changeDifficulty model str
+
+                { difficulty } =
+                    newGame
+            in
+            newGameTemplate difficulty seed newGame
 
         _ ->
             model

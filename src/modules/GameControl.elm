@@ -1,7 +1,7 @@
 module GameControl exposing (renderGameControl)
 
 import Bootstrap.Button as Button
-import Bootstrap.Dropdown as Dropdown
+import Bootstrap.Form.Select as Select
 import Html
     exposing
         ( Html
@@ -13,10 +13,10 @@ import Html
         , th
         , tr
         )
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, value)
 import Html.Events exposing (onClick)
 import Ionicon.Android exposing (happy, sad)
-import Model exposing (GameState(..), Model)
+import Model exposing (GameState(..), Model, Msg(..))
 import ViewMask exposing (flagCounter)
 
 
@@ -80,4 +80,12 @@ renderGameControl model newGameHandler =
     div [ class "d-flex justify-content-center align-items-center mb-3 mt-3" ]
         [ renderMineCounter model
         , renderGameControlFace model newGameWithDifficulty
+        , Select.select
+            [ Select.id "difficulty"
+            , Select.onChange ChangeDifficulty
+            ]
+            [ Select.item [ value "Easy" ] [ text "Easy" ]
+            , Select.item [ value "Normal" ] [ text "Normal" ]
+            , Select.item [ value "Hard" ] [ text "Hard" ]
+            ]
         ]
