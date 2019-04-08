@@ -29,7 +29,8 @@ isWin viewMask field =
                 _ ->
                     False
         )
-        (getAllMines field)
+    <|
+        getAllMines field
 
 
 isLose : ViewMask -> Bool
@@ -44,7 +45,7 @@ newGameConstructor difficulty size mines seed model =
             Random.step (Random.int 0 9999) seed
 
         mineField =
-            initializeField size mines (Random.initialSeed curentseed)
+            initializeField size mines <| Random.initialSeed curentseed
     in
     { model
         | field = mineField
@@ -84,7 +85,7 @@ initialGameConstructor initialSeed =
             Random.step (Random.int 0 9999) initialSeed
 
         mineField =
-            initializeField 10 10 (Random.initialSeed curentseed)
+            initializeField 10 10 <| Random.initialSeed curentseed
     in
     { field = mineField
     , gameState = Running

@@ -2,6 +2,7 @@ module Model exposing (GameDifficulty(..), GameState(..), Model, Msg(..))
 
 import Field exposing (CellCoord, Field)
 import Random exposing (Seed)
+import Time exposing (Posix)
 import ViewMask exposing (ViewMask)
 
 
@@ -33,5 +34,5 @@ type Msg
     = Click CellCoord
     | RightClick CellCoord
     | NewGame GameDifficulty
-    | NewRandomNumber Int
+    | Time Posix
     | ChangeDifficulty String

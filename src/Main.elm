@@ -25,13 +25,9 @@ import ViewMask exposing (ViewMask, initializeViewMask)
 -- MODEL
 
 
-initialSeed =
-    Random.initialSeed 9324432
-
-
 init : Model
 init =
-    initialGameConstructor initialSeed
+    initialGameConstructor <| Random.initialSeed 123213213
 
 
 

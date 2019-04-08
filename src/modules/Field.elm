@@ -159,7 +159,7 @@ generateEmptyField : Int -> Field
 generateEmptyField size =
     let
         generateTemplateField s =
-            List.repeat size (List.repeat s (Empty ( 0, 0 )))
+            List.repeat size (List.repeat s <| Empty ( 0, 0 ))
 
         attachY row x =
             List.indexedMap (\i c -> Empty ( x, i )) row
@@ -219,7 +219,7 @@ getElement : Field -> CellCoord -> Maybe FieldCell
 getElement field ( x, y ) =
     let
         fieldArray =
-            Array.fromList (List.map Array.fromList field)
+            Array.fromList <| List.map Array.fromList field
 
         row =
             Array.get x fieldArray
