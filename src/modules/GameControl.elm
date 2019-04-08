@@ -1,6 +1,7 @@
 module GameControl exposing (renderGameControl)
 
 import Bootstrap.Button as Button
+import Bootstrap.Dropdown as Dropdown
 import Html
     exposing
         ( Html

@@ -1,4 +1,4 @@
-module Gamplay exposing (checkGameStatus, newGameTemplate)
+module Gamplay exposing (checkGameStatus, initialGameConstructor, newGameTemplate)
 
 import Field exposing (Field, FieldCell(..), getAllMines, initializeField)
 import Model exposing (GameDifficulty(..), GameState(..), Model)
@@ -32,8 +32,8 @@ isLose viewMask =
     isExpoad viewMask
 
 
-newGameConstructor : Int -> Int -> Seed -> Model
-newGameConstructor size mines seed =
+newGameConstructor : GameDifficulty -> Int -> Int -> Seed -> Model -> Model
+newGameConstructor difficulty size mines seed model =
     let
         ( curentseed, nextSeed ) =
             Random.step (Random.int 0 9999) seed
@@ -41,19 +41,40 @@ newGameConstructor size mines seed =
         mineField =
             initializeField size mines (Random.initialSeed curentseed)
     in
-    { field = mineField
-    , gameState = Running
-    , viewMask = initializeViewMask mineField
-    , mineCounter = mines
-    , fieldSize = size
-    , seed = nextSeed
-    , diffSettingOpen = False
-    , difficulty = Normal
+    { model
+        | field = mineField
+        , gameState = Running
+        , viewMask = initializeViewMask mineField
+        , mineCounter = mines
+        , fieldSize = size
+        , seed = nextSeed
+        , diffSettingOpen = False
+        , difficulty = difficulty
     }
 
 
 
 -- exposing
+
+
+initialGameConstructor : Seed -> Model
+initialGameConstructor initialSeed =
+    let
+        ( curentseed, nextSeed ) =
+            Random.step (Random.int 0 9999) initialSeed
+
+        mineField =
+            initializeField 16 40 (Random.initialSeed curentseed)
+    in
+    { field = mineField
+    , gameState = Running
+    , viewMask = initializeViewMask mineField
+    , mineCounter = 40
+    , fieldSize = 16
+    , seed = nextSeed
+    , diffSettingOpen = False
+    , difficulty = Normal
+    }
 
 
 checkGameStatus : Model -> Model
@@ -73,13 +94,17 @@ checkGameStatus model =
             model
 
 
-newGameTemplate difficulty seed =
+newGameTemplate difficulty seed model =
+    let
+        newGameConstructorWDifficulty =
+            newGameConstructor difficulty
+    in
     case difficulty of
         Ease ->
-            newGameConstructor 10 10 seed
+            newGameConstructorWDifficulty 10 10 seed model
 
         Normal ->
-            newGameConstructor 16 40 seed
+            newGameConstructorWDifficulty 16 40 seed model
 
         Hard ->
-            newGameConstructor 22 100 seed
+            newGameConstructorWDifficulty 22 100 seed model
